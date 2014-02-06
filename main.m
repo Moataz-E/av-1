@@ -49,8 +49,9 @@ bgImage = importdata(bgPath, 'jpg');
     
     % Split in connected components.
     CC = bwconncomp(binaryDiff);
-    numPixels = cellfun(@numel,CC.PixelIdxList)
-    [biggest,idx] = max(numPixels);
+    display(CC.PixelIdxList);
+%     numPixels = cellfun(@numel,CC.PixelIdxList);
+%     [biggest,idx] = max(numPixels);
     
     % Plot the center of each component on the image.
     

@@ -20,7 +20,7 @@ num_images = 71;
 task = 1;
 
 %DIFFERENCE THRESHOLD
-diffThreshold = 4;
+diffThreshold = 40;
 
 %BACKGROUND IMAGE
 backgroundImage = myImage(dataset,'1');
@@ -35,12 +35,12 @@ if (task == 1)
     backgroundImage.normalized = rgbnormalize(backgroundImage.data);
     
     %Initialize target iamge
-    image = myImage(dataset,'17');
+    image = myImage(dataset,'11');
     image = image.readImage();
     image.normalized = rgbnormalize(image.data);
     
     %Find the difference in values between the two images
-    diffValues = sum(abs(backgroundImage.normalized - image.normalized), 3);
+    diffValues = sum(abs(backgroundImage.data - image.data), 3);
     
     %Matrix to hold resulting background subtracted image
     diffImage = uint8(zeros(image.height, image.width, 3));
@@ -55,13 +55,21 @@ if (task == 1)
             if diffValues(iRow, iColumn) >= diffThreshold
                %Store results in both unit8 format and binary format
                diffImage(iRow, iColumn, :) = ...
-                    image.normalized(iRow, iColumn, :);
+                    image.data(iRow, iColumn, :);
                binaryDiff(iRow, iColumn) = 1;
             end
         end
     end
     
-    imshow(binaryDiff);
+    %Create disk image structing with radius 3
+    se = strel('disk',4)';
+    %Open image to remove small noisy circles
+    resultImage = imopen(binaryDiff, se);
+
+	CC = bwconncomp(resultImage);
+    display(CC.PixelIdxList);
+    
+    imshow(resultImage);
 end
     
 %----------------------------Task 2----------------------------------------
