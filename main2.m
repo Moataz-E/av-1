@@ -47,7 +47,7 @@ if (task == 1)
     %Matrix to hold resulting background subtracted image
     diffImage = uint8(zeros(image.height, image.width, 3));
     binaryDiff = zeros(image.height, image.width);
-    
+
     %Populate difference matrices
     for iColumn = 1 : image.width
         for iRow = 1 : image.height
@@ -63,7 +63,7 @@ if (task == 1)
         end
     end
     
-    %Create disk image structing with radius 3
+    %Create disk image structuring with radius 3
     se = strel('disk',4)';
     %Image opening to remove small noisy circles
     resultImage = imopen(binaryDiff, se);

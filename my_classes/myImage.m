@@ -64,6 +64,17 @@ classdef myImage
         %Adds a marble object to this image's array list of marbles.
         %Ensures marble added will not have a duplicate ID.
         
+            %Loop through each existant marble object and check for
+            %duplicate ID.
+            for marbleNum = 1 : size(obj.marbles,2)
+                
+                if (marble.ID == obj.marbles(1,marbleNum).ID)
+                    error('Marble with that ID already exists!');
+                end
+            end
+            
+            %Add marble object to this images list of marbles
+            obj.marbles(end+1) = marble;
         end
 
         function obj = identifyMarbles(obj)
