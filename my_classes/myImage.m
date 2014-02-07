@@ -21,7 +21,10 @@ classdef myImage
         data;
         
         %Stores normalized image pixel values
-        normalized; 
+        normalized;
+        
+        %Array containing marble objects currently in the image
+        marbles;
     end 
 %--------------------------------------------------------------------------    
     methods
@@ -55,7 +58,23 @@ classdef myImage
         %error if image path not generated yet.
 
                 obj.data = imread(obj.path);
-        end     
+        end
+        
+        function obj = addMarble(obj, marble)
+        %Adds a marble object to this image's array list of marbles.
+        %Ensures marble added will not have a duplicate ID.
+        
+        end
+
+        function obj = identifyMarbles(obj)
+        %Attempts to identify all marbles in this image.
+        
+        %for each conencted component, find the center of mass,inialize
+        %a marble component, add it to the array marbles.
+        
+        %Uses the addMarble function.
+        
+        end
     end  
 end
 

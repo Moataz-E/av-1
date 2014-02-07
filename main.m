@@ -50,10 +50,12 @@ bgImage = importdata(bgPath, 'jpg');
     % Split in connected components.
     CC = bwconncomp(binaryDiff);
     display(CC.PixelIdxList);
-%     numPixels = cellfun(@numel,CC.PixelIdxList);
-%     [biggest,idx] = max(numPixels);
+    numPixels = cellfun(@numel,CC.PixelIdxList);
+    [biggest,idx] = max(numPixels);
     
     % Plot the center of each component on the image.
+    % Center of mass of connected component linear indices is simply the
+    % sum of all the linear indices divided by the total number.
     
     % Display the image.
     imshow(binaryDiff);

@@ -5,11 +5,13 @@ clc;    %Clear the command window.
 close all;  %Close all figures (except those of imtool).
 clear;  %Erase all existing variables from workspace.
 clearvars; %Remove all stored variables from memory.
-clear classes;
+clear classes; %Remove all stored class objects.
 %--------------------------------------------------------------------------
 
 %DATASET SELECTOR
 dataset = 'dataset';
+
+%NUMBER OF IMAGES
 num_images = 71;
 
 %TASK SELECTOR
@@ -34,7 +36,7 @@ if (task == 1)
     
     backgroundImage.normalized = rgbnormalize(backgroundImage.data);
     
-    %Initialize target iamge
+    %Initialize target image
     image = myImage(dataset,'11');
     image = image.readImage();
     image.normalized = rgbnormalize(image.data);
@@ -63,7 +65,7 @@ if (task == 1)
     
     %Create disk image structing with radius 3
     se = strel('disk',4)';
-    %Open image to remove small noisy circles
+    %Image opening to remove small noisy circles
     resultImage = imopen(binaryDiff, se);
 
 	CC = bwconncomp(resultImage);
