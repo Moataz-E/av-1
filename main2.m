@@ -40,28 +40,10 @@ if (task == 1)
     image = myImage(dataset,'11');
     image = image.readImage();
     image.normalized = rgbnormalize(image.data);
-    
-    %Find the difference in values between the two images
-    diffValues = sum(abs(backgroundImage.data - image.data), 3);
-    
-    %Matrix to hold resulting background subtracted image
-    diffImage = uint8(zeros(image.height, image.width, 3));
-    binaryDiff = zeros(image.height, image.width);
 
-    %Populate difference matrices
-    for iColumn = 1 : image.width
-        for iRow = 1 : image.height
-            
-            %If value greater than threshold, that means a non-background
-            %object was detected.
-            if diffValues(iRow, iColumn) >= diffThreshold
-               %Store results in both unit8 format and binary format
-               diffImage(iRow, iColumn, :) = ...
-                    image.data(iRow, iColumn, :);
-               binaryDiff(iRow, iColumn) = 1;
-            end
-        end
-    end
+    %Perform background subtraction on image
+    [diffImage, binaryDiffImage] = sub_background(backgroundImage.data, ...
+                                    image.data, diffThreshold);
     
     %Create disk image structuring with radius 3
     se = strel('disk',4)';
