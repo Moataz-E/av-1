@@ -25,35 +25,30 @@ task = 1;
 diffThreshold = 40;
 
 %BACKGROUND IMAGE
-backgroundImage = myImage(dataset,'1');
-%Read background image
+backgroundImage = myImage();
+backgroundImage.dataset = dataset;
+backgroundImage.number = 1;
+backgroundImage = backgroundImage.generatePath();
 backgroundImage = backgroundImage.readImage();
 
 %----------------------------Task 1----------------------------------------
 if (task == 1)
-    % Pre-process images and then attempt to find the difference between
-    %images and the background.
-    
-    backgroundImage.normalized = rgbnormalize(backgroundImage.data);
     
     %Initialize target image
-    image = myImage(dataset,'11');
+    image = myImage();
+    image.dataset = dataset;
+    image.number = 11;
+    image = image.generatePath();
     image = image.readImage();
-    image.normalized = rgbnormalize(image.data);
 
     %Perform background subtraction on image
-    [diffImage, binaryDiffImage] = sub_background(backgroundImage.data, ...
-                                    image.data, diffThreshold);
+    image = image.removeBackground(backgroundImage.data, diffThreshold);
     
-    %Create disk image structuring with radius 3
-    se = strel('disk',4)';
-    %Image opening to remove small noisy circles
-    resultImage = imopen(binaryDiff, se);
-
-	CC = bwconncomp(resultImage);
-    display(CC.PixelIdxList);
+    %Identify location of marbles in image
+    image = image.identifyMarbles();
+    T = image.CC.PixelIdxList;
+    display(image);
     
-    imshow(resultImage);
 end
     
 %----------------------------Task 2----------------------------------------

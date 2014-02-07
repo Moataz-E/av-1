@@ -20,37 +20,41 @@ classdef myImage
         %values are in uint8 format
         data;
         
-        %Stores normalized image pixel values
-        normalized;
+        %Stores preprocessed version of the image
+        preprocessed;
         
-        %Array containing marble objects currently in the image
-        marbles;
+        %Background subtracted version of this image
+        diff
+        
+        %Binary version of the background subtracted image
+        binaryDiff
+        
+        %Connected components object of this image
+        CC
+        
+        %Array containing marble objects currently in the image.
+        %Initialized to a pre-defined maximum marbles per image.
+        marbles = myMarble.empty(18, 18, 0);
     end 
 %--------------------------------------------------------------------------    
     methods
         
-        function obj = myImage(img_dataset, img_number)
-        %Class construtor, initialized with the name of the dataset to
-        %which it belongs and its number in that dataset. It uses those
-        %parameters to generate the path.
-        
-            if (nargin > 0)
-                obj.dataset = img_dataset;
-                obj.number = img_number;
-                obj = obj.generatePath;
-            end    
+        function obj = myImage()
+        %Class construtor. Avoid requiring initialization parameters for
+        %greater flexibility
         end
               
         function obj = generatePath(obj)
         %Given a number, this function returns the corrosponding image
         %name. dataset should be the name of the dataset's directory
 
-            %Convert image number to string in preperation for
-            %concatination.
-            str_number = num2str(obj.number);
+        
+                %Convert image number to string in preperation for
+                %concatination.
+                str_number = num2str(obj.number);
 
-            %Generate name for image path
-            obj.path = strcat(obj.dataset,'/',str_number,'.jpg');
+                %Generate name for image path
+                obj.path = strcat(obj.dataset,'/',str_number,'.jpg');
         end
         
         function obj = readImage(obj)
@@ -60,30 +64,76 @@ classdef myImage
                 obj.data = imread(obj.path);
         end
         
+        function obj = removeBackground(obj, background, threshold)
+        %Given a background and a threshold, perform background subtraction
+        %on this image to obtain the resulting rgb and binary versions.
+        
+        [obj.diff, obj.binaryDiff] = sub_background(background, ...
+                                        obj.data, threshold);
+        end
+        
         function obj = addMarble(obj, marble)
         %Adds a marble object to this image's array list of marbles.
         %Ensures marble added will not have a duplicate ID.
-        
+
             %Loop through each existant marble object and check for
             %duplicate ID.
             for marbleNum = 1 : size(obj.marbles,2)
-                
-                if (marble.ID == obj.marbles(1,marbleNum).ID)
+
+                if (marble.ID == obj.marbles(marbleNum, 1).ID)
                     error('Marble with that ID already exists!');
                 end
             end
             
             %Add marble object to this images list of marbles
-            obj.marbles(end+1) = marble;
+            obj.marbles;
         end
 
         function obj = identifyMarbles(obj)
-        %Attempts to identify all marbles in this image.
+        %Attempts to identify all marbles in this image. Image must have
+        %background subtracted versions removed first. Stores list of
+        %marble objects in this image. Marbles are given an ID starting
+        %with the frame's number as the prefix.
         
         %for each conencted component, find the center of mass,inialize
         %a marble component, add it to the array marbles.
         
-        %Uses the addMarble function.
+            %Make sure background subtracted versions of image exist
+            if (isempty(obj.diff) || isempty(obj.binaryDiff))
+                error('Remove background from image first!');
+            else
+                
+                %Create disk image structuring with radius 3
+                se = strel('disk',4)';
+                
+                %Apply image open and store in this image's preprocess 
+                %variable
+                obj.preprocessed = imopen(obj.binaryDiff, se);
+                
+                %Find connected components
+                obj.CC = bwconncomp(obj.preprocessed);
+
+                %Loop through each connected components, identifying and
+                %initializing marble objects
+                for cc = 1 : size(obj.CC.PixelIdxList, 2)
+                    
+                    marble = myMarble();
+                    marble = marble.assignID(obj.number + cc);
+
+                    %Total sum of linear indices in this connected
+                    %component
+                    ccSum = sum(obj.CC.PixelIdxList{1,cc});
+                    
+                    %Calculate and assign center of mass of marble
+                    com = ccSum / size(obj.CC.PixelIdxList{1,cc}, 1);
+                    marble = marble.assignCOM(com);
+                    
+                    %Add this marble to our list of detected marbles
+                    obj.marbles(cc, 1).assignID(obj.number + cc);
+ 
+                end
+                
+            end
         
         end
     end  

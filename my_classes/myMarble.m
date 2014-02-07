@@ -17,8 +17,12 @@ classdef myMarble
     methods
         
         
-        function obj = myMarble(ID)
-        %Class constructor. Initialize marble object with some ID.
+        function obj = myMarble()
+        %Class constructor.
+        end
+        
+        function obj = assignID(obj, ID)
+        %Assign an ID to this marble
         
             obj.ID = ID;
         end
