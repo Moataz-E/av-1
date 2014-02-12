@@ -22,7 +22,7 @@ num_images = 71;
 task = 1;
 
 %DIFFERENCE THRESHOLD
-diffThreshold = 40;
+diffThreshold = 52;
 
 %BACKGROUND IMAGE
 backgroundImage = myImage();
@@ -33,39 +33,38 @@ backgroundImage = backgroundImage.readImage();
 
 %----------------------------Task 1----------------------------------------
 if (task == 1)
-    for imageNum = 1 : num_images
-        %Initialize target image
-        image = myImage();
-        image.dataset = dataset;
-        image.number = imageNum;
-        image = image.generatePath();
-        image = image.readImage();
+    for imageNum = 1 : 
+    %Initialize target image
+    image = myImage();
+    image.dataset = dataset;
+    image.number = 5;
+    image = image.generatePath();
+    image = image.readImage();
 
-        %Perform background subtraction on image
-        image = image.removeBackground(backgroundImage.data, diffThreshold);
+    %Perform background subtraction on image
+    image = image.removeBackground(backgroundImage.data, diffThreshold);
+    
+    %Identify location of marbles in image
+    image = image.identifyMarbles();
+    
+    %Initialize final image to be labeled and displayed
+    finalImage = image.data;
+    
+    %Radius of circles to draw around identified marbles
+    radius = 10;
 
-        %Identify location of marbles in image
-        image = image.identifyMarbles();
-
-        %Initialize final image to be labeled and displayed
-        finalImage = image.data;
-
-        %Radius of circles to draw around identified marbles
-        radius = 10;
-
-        %Draw circles around each of the detected marbles. Radius of each 
-        %circle is 10 pixels
-        for marble = 1 : size(image.marbles,2)
-            finalImage = drawCircle(finalImage,image.marbles(marble).com, ...
-                radius,'r',1000);
-        end
-
-        %Plot results
-        subplot(2,2,1), imshow(image.data);
-        subplot(2,2,2), imshow(image.preprocessed);
-        subplot(2,2,3), imshow(finalImage);
-        pause(2);
+    %Draw circles around each of the detected marbles. Radius of each 
+    %circle is 10 pixels
+    for marble = 1 : size(image.marbles,2)
+        finalImage = drawCircle(finalImage,image.marbles(marble).com, ...
+            radius,'r',1000);
     end
+    
+    %Plot results
+    subplot(2,2,1), imshow(image.data);
+    subplot(2,2,2), imshow(image.preprocessed1);
+    subplot(2,2,3), imshow(image.preprocessed2);
+    subplot(2,2,4), imshow(finalImage);
     
 end
     
