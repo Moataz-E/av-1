@@ -1,13 +1,13 @@
 function [diffImage, binaryDiffImage] = sub_background(image1, image2, ...
                                             diffThreshold)
-    %Given two images and a threshold, this function attempts to subtract 
-    %common pixels from both images, returning the difference image in RGB 
-    %format and in binary format.
-    %
-    %image1 is usually a background image and image2 is the one containing
-    %objects you are after.
-    %
-    %Both images must be of the same size.
+%Given two images and a threshold, this function attempts to subtract 
+%common pixels from both images, returning the difference image in RGB 
+%format and in binary format.
+%
+%image1 is usually a background image and image2 is the one containing
+%objects you are after.
+%
+%Both images must be of the same size.
    
     %Find image dimensions
     [height, width, depth] = size(image1);

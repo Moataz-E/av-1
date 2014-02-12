@@ -7,7 +7,7 @@ classdef myMarble
         ID;
         
         %Center of mass of the marble
-        centerOfMass;
+        com;
         
         %2D histogram of the r/g components from normalised RGB values
         histogram;
@@ -27,10 +27,10 @@ classdef myMarble
             obj.ID = ID;
         end
         
-        function obj = assignCOM(obj, centerOfMass)
+        function obj = assignCOM(obj, com)
         %Assign a center of mass linear coordinate to this marble
             
-            obj.centerOfMass = centerOfMass;
+            obj.com = com;
         end
         
         function obj = generateHistogram(obj, image)

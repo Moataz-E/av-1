@@ -98,20 +98,21 @@ classdef myImage
                 %Find connected components
                 obj.CC = bwconncomp(obj.preprocessed);
 
+                %Find center of mass of all marbles
+                com = regionprops(obj.CC,'Centroid');
+
                 %Loop through each connected components, identifying and
                 %initializing marble objects
                 for cc = 1 : size(obj.CC.PixelIdxList, 2)
 
+                    %Marble id is the number of the image at which it was
+                    %identified concatenated to the order at which it is
+                    %identified in a given image
                     marble = myMarble();
-                    marble = marble.assignID(obj.number + cc);
-
-                    %Total sum of linear indices in this connected
-                    %component
-                    ccSum = sum(obj.CC.PixelIdxList{1,cc});
+                    marble = marble.assignID((obj.number*100) + cc);
                     
-                    %Calculate and assign center of mass of marble
-                    com = ccSum / size(obj.CC.PixelIdxList{1,cc}, 1);
-                    marble = marble.assignCOM(com);
+                    %Assign the center of mass of marble
+                    marble = marble.assignCOM(com(cc).Centroid);
                     
                     %Loop through each existant marble object and check for
                     %duplicate ID.

@@ -37,7 +37,7 @@ if (task == 1)
     %Initialize target image
     image = myImage();
     image.dataset = dataset;
-    image.number = 11;
+    image.number = 60;
     image = image.generatePath();
     image = image.readImage();
 
@@ -46,8 +46,24 @@ if (task == 1)
     
     %Identify location of marbles in image
     image = image.identifyMarbles();
-    T = image.CC.PixelIdxList;
-    display(image);
+    
+    %Initialize final image to be labeled and displayed
+    finalImage = image.data;
+    
+    %Radius of circles to draw around identified marbles
+    radius = 10;
+
+    %Draw circles around each of the detected marbles. Radius of each 
+    %circle is 10 pixels
+    for marble = 1 : size(image.marbles,2)
+        finalImage = drawCircle(finalImage,image.marbles(marble).com, ...
+            radius,'r',1000);
+    end
+    
+    %Plot results
+    subplot(2,2,1), imshow(image.data);
+    subplot(2,2,2), imshow(image.preprocessed);
+    subplot(2,2,3), imshow(finalImage);
     
 end
     
