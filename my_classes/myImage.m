@@ -4,7 +4,7 @@ classdef myImage
     properties
         
         %Dataset to which image belongs
-        dataset
+        dataset;
         
         %Image number in the dataset
         number;
@@ -24,17 +24,17 @@ classdef myImage
         preprocessed;
         
         %Background subtracted version of this image
-        diff
+        diff;
         
         %Binary version of the background subtracted image
-        binaryDiff
+        binaryDiff;
         
         %Connected components object of this image
-        CC
+        CC;
         
         %Array containing marble objects currently in the image.
         %Initialized to a pre-defined maximum marbles per image.
-        marbles = myMarble.empty(18, 18, 0);
+        marbles;
     end 
 %--------------------------------------------------------------------------    
     methods
@@ -42,6 +42,8 @@ classdef myImage
         function obj = myImage()
         %Class construtor. Avoid requiring initialization parameters for
         %greater flexibility
+        
+             obj.marbles = myMarble.empty(18, 0);
         end
               
         function obj = generatePath(obj)
@@ -116,7 +118,7 @@ classdef myImage
                 %Loop through each connected components, identifying and
                 %initializing marble objects
                 for cc = 1 : size(obj.CC.PixelIdxList, 2)
-                    
+
                     marble = myMarble();
                     marble = marble.assignID(obj.number + cc);
 
@@ -129,8 +131,7 @@ classdef myImage
                     marble = marble.assignCOM(com);
                     
                     %Add this marble to our list of detected marbles
-                    obj.marbles(cc, 1).assignID(obj.number + cc);
- 
+                    obj.marbles(cc) = marble;
                 end
                 
             end
