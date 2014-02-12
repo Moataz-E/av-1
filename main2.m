@@ -7,7 +7,9 @@ clear;  %Erase all existing variables from workspace.
 clearvars; %Remove all stored variables from memory.
 clear classes; %Remove all stored class objects.
 %--------------------------------------------------------------------------
-
+%Add classes and functions to path
+addpath('my_classes', 'my_functions', 'saved_variables');
+%--------------------------------------------------------------------------
 %DATASET SELECTOR
 dataset = 'dataset';
 
@@ -46,9 +48,23 @@ if (task == 1)
 
         %Identify location of marbles in image
         image = image.identifyMarbles();
+        
+        %Initialize target image
+        image2 = myImage();
+        image2.dataset = dataset;
+        image2.number = imageNum;
+        image2 = image2.generatePath();
+        image2 = image2.readImage();
 
-        %Initialize final image to be labeled and displayed
+        %Perform background subtraction on image
+        image2 = image2.removeBackground(backgroundImage.data, diffThreshold);
+
+        %Identify location of marbles in image
+        image2 = image2.identifyMarbles();
+
+        %Initialize final image to be 30labeled and displayed
         finalImage = image.data;
+        finalImage2 = image2.data;
 
         %Radius of circles to draw around identified marbles
         radius = 10;
@@ -59,12 +75,18 @@ if (task == 1)
             finalImage = drawCircle(finalImage,image.marbles(marble).com, ...
                 radius,'r',1000);
         end
+        for marble = 1 : size(image2.marbles,2)
+            finalImage2 = drawCircle(finalImage2,image2.marbles(marble).com, ...
+                radius,'r',1000);
+        end
 
         %Plot results
-        subplot(2,2,1), imshow(image.data);
-        subplot(2,2,2), imshow(image.preprocessed);
-        subplot(2,2,3), imshow(finalImage);
-        pause(2);
+        subplot(2,3,1), imshow(image.data);
+        subplot(2,3,2), imshow(image.preprocessed);
+        subplot(2,3,3), imshow(image2.preprocessed);
+        subplot(2,3,5), imshow(finalImage);
+        subplot(2,3,6), imshow(finalImage2);
+        pause(1);
     end
     
 end

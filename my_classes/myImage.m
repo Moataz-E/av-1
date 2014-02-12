@@ -89,7 +89,7 @@ classdef myImage
             else
                 
                 %Create disk image structuring with radius 3
-                se = strel('disk',4);
+                se = strel('disk',3);
                 
                 %Apply image open and store in this image's preprocess 
                 %variable
