@@ -73,23 +73,6 @@ classdef myImage
         [obj.diff, obj.binaryDiff] = sub_background(background, ...
                                         obj.data, threshold);
         end
-        
-        function obj = addMarble(obj, marble)
-        %Adds a marble object to this image's array list of marbles.
-        %Ensures marble added will not have a duplicate ID.
-
-            %Loop through each existant marble object and check for
-            %duplicate ID.
-            for marbleNum = 1 : size(obj.marbles,2)
-
-                if (marble.ID == obj.marbles(marbleNum, 1).ID)
-                    error('Marble with that ID already exists!');
-                end
-            end
-            
-            %Add marble object to this images list of marbles
-            obj.marbles;
-        end
 
         function obj = identifyMarbles(obj)
         %Attempts to identify all marbles in this image. Image must have
@@ -130,6 +113,14 @@ classdef myImage
                     com = ccSum / size(obj.CC.PixelIdxList{1,cc}, 1);
                     marble = marble.assignCOM(com);
                     
+                    %Loop through each existant marble object and check for
+                    %duplicate ID.
+                    for marbleNum = 1 : size(obj.marbles,2)
+                        
+                        if (marble.ID == obj.marbles(marbleNum).ID)
+                            error('Marble with that ID already exists!');
+                        end
+                    end
                     %Add this marble to our list of detected marbles
                     obj.marbles(cc) = marble;
                 end
