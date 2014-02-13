@@ -69,23 +69,9 @@ if (task == 1)
         %Identify location of marbles in image
         image = image.identifyMarbles();
         image = image.locateClosestMarble(prevImage, maxDifference);
-        
-        %Initialize target image
-        image2 = myImage();
-        image2.dataset = dataset;
-        image2.number = imageNum;
-        image2 = image2.generatePath();
-        image2 = image2.readImage();
 
-        %Perform background subtraction on image
-        image2 = image2.removeBackground(backgroundImage.data, diffThreshold);
-
-        %Identify location of marbles in image
-        image2 = image2.identifyMarbles();
-
-        %Initialize final image to be 30labeled and displayed
+        %Initialize final image to be labeled and displayed
         finalImage = image.data;
-        finalImage2 = image2.data;
 
         %Radius of circles to draw around identified marbles
         radius = 10;
@@ -93,9 +79,62 @@ if (task == 1)
         %Draw circles around each of the detected marbles. Radius of each 
         %circle is 10 pixels
         for marble = 1 : size(image.marbles,2)
+            
             finalImage = drawCircle(finalImage,image.marbles(marble).com, ...
                 radius,'r',1000);
-            
+        end
+
+%         for marble = 1 : size(image.marbles,2)
+%            display(image.marbles(marble).ID);
+%         end
+%         subplot(2,2,1), imshow(image.data);
+%         subplot(2,2,2), imshow(image.preprocessed);
+%         subplot(2,2,3), imshow(image2.preprocessed);
+        imshow(finalImage);
+        pause(1);
+        
+        prevImage = image;
+    end
+end
+    
+%----------------------------Task 2----------------------------------------
+if (task == 2)
+    
+    %Initialize image to contain track of each marble
+    track_image = backgroundImage.data;
+    
+    for imageNum = 1 : num_images
+        
+        %Initialize target image
+        image = myImage();
+        image.dataset = dataset;
+        image.number = imageNum;
+        image = image.generatePath();
+        image = image.readImage();
+
+        %Perform background subtraction on image
+        image = image.removeBackground(backgroundImage.data, diffThreshold);
+        
+        %If this is the first image, use it as the previous image in
+        %marble tracking
+        if (imageNum == 1)
+            prevImage = myImage();
+            prevImage.dataset = dataset;
+            prevImage.number = imageNum;
+            prevImage = prevImage.generatePath();
+            prevImage = prevImage.readImage();
+            prevImage = prevImage.removeBackground(backgroundImage.data, ...
+                diffThreshold);
+            prevImage = prevImage.identifyMarbles();
+        end 
+        
+        %Identify location of marbles in image
+        image = image.identifyMarbles();
+        image = image.locateClosestMarble(prevImage, maxDifference);
+
+        %Draw line between marbles identified as having the same ID between
+        %frames
+        for marble = 1 : size(image.marbles,2)
             for prevMarble = 1 : size(prevImage.marbles,2)
                 
                 if (image.marbles(marble).ID == prevImage.marbles(prevMarble).ID)
@@ -104,31 +143,10 @@ if (task == 1)
                 end
             end
         end
-        for marble = 1 : size(image2.marbles,2)
-            finalImage2 = drawCircle(finalImage2,image2.marbles(marble).com, ...
-                radius,'r',1000);
-        end
-
-%         for marble = 1 : size(image.marbles,2)
-%            display(image.marbles(marble).ID);
-%         end
-        %Plot results
-%         subplot(2,2,1), imshow(image.data);
-%         subplot(2,2,2), imshow(image.preprocessed);
-%         subplot(2,2,3), imshow(image2.preprocessed);
-%         imshow(finalImage);
-%         pause(1);
-        
-%         subplot(2,3,6), imshow(finalImage2);
         
         prevImage = image;
     end
     imshow(track_image);
-    
-end
-    
-%----------------------------Task 2----------------------------------------
-if (task == 2)
 end
     
 %----------------------------Task 3----------------------------------------
