@@ -20,7 +20,7 @@ num_images = 71;
 %Select which task you want the code to accomplish:
 % 1 --> Marble Detection
 % 2 --> Tracking
-task = 2;
+task = 1;
 
 %DIFFERENCE THRESHOLD
 diffThreshold = 40;
@@ -45,7 +45,7 @@ if (task == 1)
         %Initialize target image
         image = myImage();
         image.dataset = dataset;
-        image.number = imageNum;
+        image.number = 25;
         image = image.generatePath();
         image = image.readImage();
 
@@ -90,7 +90,7 @@ if (task == 1)
 %         subplot(2,2,2), imshow(image.preprocessed);
 %         subplot(2,2,3), imshow(image2.preprocessed);
         imshow(finalImage);
-        pause(1);
+        pause(40);
         
         prevImage = image;
     end

@@ -4,6 +4,10 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{listings}
+\usepackage{courier}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
 \author{Moataz Elmasry and Monica Paun}
 \title{Advanced Vision Assignment 1}
 
@@ -14,7 +18,7 @@
 
 \begin{abstract}
 
-In this report, we outline our attempt at identifying and tracking a set of marbles moving across a fixed featureless background. The first section of the report discusses the detection of the marbles in each individual frame, the second section discusses the tracking of the marbles across consecutive frames, and the third and final section evaluates our results against the ground truth results. For each of the tasks, we describe the algorithm used, and its performance.
+In this report, we outline our attempt at identifying and tracking a set of marbles moving across a fixed featureless background. The first section of the report discusses the detection of the marbles in each individual frame, the second section discusses the tracking of the marbles across consecutive frames. For each of the tasks, we describe the algorithm used, and its performance.
 
 \end{abstract}
 
@@ -24,16 +28,17 @@ In this report, we outline our attempt at identifying and tracking a set of marb
 
 \subsection{Object-oriented Approach}
 
-\subsection{Background Subtraction}
-It is assumed that the first image of the dataset represents the background of the scene. The function \texttt{sub\_background.m} takes a pair of images and a threshold and returns:
+Given the large number of unique dynamic marbles that need to be identified and the apparent complexity of information represented by every image frame, we decided to use an object-oriented approach to better tackle the assignment. Despite adding an extra overhead in terms of coding effort, this approach proved very beneficial with regards to understanding, maintaining and structuring the code.
 
-\begin{itemize}
-\item A set of all the pairs of coordinates where the correspond pixels are more different than the threshold;
-\item A set of all the pairs of the values in the non-background image of all the three color channels of the points mentioned earlier 
-\end{itemize}
+Image objects were represented by such things as their number in the dataset, their connected components, and their marbles list among other things. Furthermore, the marbles list contained marble objects each storing information such as its unique id, its center of mass, its speed, etc.
+
+\subsection{Background Subtraction}
+
+In order to uniquely identify each of the marbles in any given target frame of the dataset, we subtracted the pixel values from the fixed background. We obtained two versions of the subtracted image, a binary version where a pixel is set to 1 if it passes a pre-defined manually tuned threshold, and an RGB version that retains the target frame's colour space values but discards shared pixel values.
 
 \subsection{Post-processing}
-The \texttt{identifyMarbles} function of every \texttt{myImage} object places a list of \texttt{myMarble} objects in the \texttt{marbles} field of the former mentioned class of the two. In order to achieve this, the following steps are taken:
+
+The \texttt{identifyMarbles} function of every \texttt{Image} object places a list of \texttt{Marble} objects in the \texttt{marbles} field of the aforementioned class of the two. In order to achieve this, the following steps are taken:
 
 \begin{itemize}
 \item given the list of pairs where a significant difference between the background image and the current image is found, the surface described by them is smoothed with the aid of the \texttt{strel('disk',3)} function
@@ -45,7 +50,7 @@ The \texttt{identifyMarbles} function of every \texttt{myImage} object places a 
 \item the centroid of each connected component is added as a \texttt{marble} centroid to the list of \texttt{marble}s in the \texttt{image} object; each one of these detected marbles are assigned an unique id.
 \end{itemize}
 
-\subsection{Connected component area splitting}
+\subsection{Connected Component Area Splitting}
 As the marbles are colliding at times in their motion, some of the connected components correspond to multiple balls. In order to avoid these, the following procedure has been attempted:
 
 \begin{itemize}
@@ -63,28 +68,112 @@ Although this method seemed promising on certain examples where a connected comp
 
 \end{itemize}  
 
-\subsection{Marble Identification}
+\subsection{Performance Analysis}
 
-\section{Performance Analysis}
-
-Normalized vs non-normalized
+The following table summarizes the 
+\begin{table}[ht]
+	
+	% centering the whole table
+	\centering
+	% spacing
+	\setlength{\extrarowheight}{1.5pt}
+	% define column styles (2 columns)
+	\begin{tabular}{| c | c |} 
+		% table upper margin
+		\hline
+		Event Description & Frequency \\ [0.5ex] % heading & vertical space above
+		\hline \hline \hline % triple horizontal line below header
+		\textbf{1. Total recognized} & \textbf{72\%} \\
+		1.1. Marbles recognized: predicted centroid closer to real centroid than to marble margin & 58\% \\
+		1.2. Marbles recognized: predicted centroid closer to marble margin than to real centroid & 14\% \\
+		\hline \hline
+		\textbf{2. Total missed} & \textbf{28\%} \\
+		2.1. Shadow recognized as marble & 8\% \\
+		2.2. Two marble cluster recognized as one single marble & 10 \% \\
+		2.3. Three marble cluster recognized as one marble & 4\%	\\
+		2.4. Two marble cluster recognized as three marbles & 4\% \\
+		2.5. Other events & 2\% \\ [1ex] % & vertical space below end of body
+		\hline % table lower margin
+	\end{tabular}
+	% table title
+	\caption{Manually Computed Performance distribution}
+\end{table}
 
 \subsection{Successful Detections}
 
+The following two images show our algorithm detecting most of the marbles in two frames.:
+
+\begin{center}
+\includegraphics[width=7.5cm]{identification_1.png}
+\includegraphics[width=7.5cm]{identification_2.png}
+\end{center}
+
 \subsection{Unsuccessful Detections}
+
+The following two images show where our algorithm failing to detect some of the marbles. This most commonly happens when marbles are too close together and end up being treated as one big blob. 
+
+\begin{center}
+\includegraphics[width=7.5cm]{misidentification_1.png}
+\includegraphics[width=7.5cm]{misidentification_2.png}
+\end{center}
+
+In addition, the following two images show that no improvement was gained from performing the blob separation technique. This is mainly attributed to the fact that background subtraction can't remove shadow objects; thus the shadow pixels end up being randomly split between the objects in the blob. This results in an unpredictable shift in the centroids. Two marbles went undetected with blob separation.
+
+
+
+\begin{center}
+	\begin{figure}[h!]
+		\includegraphics[width=7.5cm]{blob_splitting_with1.png}
+		\includegraphics[width=7.5cm]{blop_splitting_without1.png}
+		\caption{\textbf{Left:} Marble identification with blob splitting.  \textbf{Right:} Marble identification without blob splitting}
+	\end{figure}
+\end{center}
 
 \chapter{Marble Tracking}
 
 \section{Algorithm}
 
+Given two consecutive image objects, our marble tracker's main goal is to determine correspondence between the detected marble objects in the new frame and the marble objects in the old frame. In order to make such a decision, we calculated a number of important features for each marble:
+
+\begin{itemize}
+\item \textbf{ID:} For any newly detected marble in a frame, it was assigned an id that constitutes the number of the image it was found in and the order at which it was found. Such an id was assigned regardless of any other information about marbles in previous frames.
+
+\item \textbf{Center of Mass:}  Calculated using the connected components property mentioned earlier.
+
+\item \textbf{sumRB:} The sum of the red and blue colour values at the marble's center for the first frame at which it was found. This is one of the two features used to draw correspondence between marbles in consecutive frames.
+
+\item \textbf{colour:} The colour used to show the marble's track .
+\end{itemize}
+
+The \textbf{ID} and \textbf{Center of Mass} are calculated when the marbles are first initialized. Given this information for two consecutive frames, we use two features to decide marble correspondence. The first feature is the difference between the sum of the red and blue colour values between the two marbles, and the second feature is the distance between two marbles. Using those two feature, we go through each marble pair in the two frames and assign any two marbles (where the features are below a certain pre-defined threshold) the same \textbf{ID}. Furthermore, the speed feature of any marble was simply the distance travelled between this frame and the previous one.
 
 \section{Performance Analysis}
 
-\subsection{Successful Detections}
+Despite its simplicity, the algorithm was able to achieve a remarkable performance in tracking the marbles. The only problem we faced was colouring the tracks as some of the marbles in the detection phase were misidentified and caused the tracking algorithm to perform mistakes. For example, two very close marbles were considered one marble in one frame and two marbles in another. This resulted in them being given the same ID. This problem wouldn't have emerged if it wasn't for the algorithm's high dependence on a perfected detection.
 
-\subsection{Unsuccessful Detections}
+We tried to tackle this problem by using blob separation technique mentioned earlier but it resulted in worse results as it over fitted the data and was specific to a certain test frame. Below are two images showing the tracks detected with and without blob separation:
 
-\chapter{Final Evaluation and Discussion}
+\subsection{Tracking With/Without Blop Separation}
+
+The following images show marble tracking with/without blob separation. Images with blob separation are missing some of the marble tracks, in addition they tend to be more disconnected.
+
+\begin{center}
+	\begin{figure}[h!]
+		\includegraphics[width=7.5cm]{blob_splitting_track_with2.png}
+		\includegraphics[width=7.5cm]{blob_splitting_track_without2.png}
+		\caption{\textbf{Left:} Marble racking with blob splitting.  \textbf{Right:} Marble tracking without blob splitting}
+	\end{figure}
+\end{center}
+
+\subsection{Final Marble Tracking Result}
+
+The following image shows our final marble tracks using optimum feature values as mentioned before. The disconnection in the marble tracks is caused by misidentified marble correspondences. Nevertheless, most marble tracks were partially identified.
+
+\begin{center}
+	\begin{figure}[h!]
+		\includegraphics[width=15cm]{track_purple_30diff.png}
+	\end{figure}
+\end{center}
 
 \chapter{Code Appendix}
 
@@ -553,10 +642,6 @@ classdef myMarble
         %Colour used to track marble
         colour;
         
-        %Speed at which marble is travelling. This is basically the
-        %distance travelled per frame
-        speed;
-
     end
 %--------------------------------------------------------------------------    
     methods
