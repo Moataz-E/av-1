@@ -20,14 +20,13 @@ num_images = 71;
 %Select which task you want the code to accomplish:
 % 1 --> Marble Detection
 % 2 --> Tracking
-% 3 --> Evaluation
-task = 1;
+task = 2;
 
 %DIFFERENCE THRESHOLD
 diffThreshold = 40;
 
 %MAX MARBLE CORRESPONDENCE
-maxDifference =  25;
+maxDifference =  30;
 
 %BACKGROUND IMAGE
 backgroundImage = myImage();
@@ -103,6 +102,11 @@ if (task == 2)
     %Initialize image to contain track of each marble
     track_image = backgroundImage.data;
     
+    %Array of colours
+    colours = ['y'];
+    
+    current_colour = 1;
+    
     for imageNum = 1 : num_images
         
         %Initialize target image
@@ -138,8 +142,18 @@ if (task == 2)
             for prevMarble = 1 : size(prevImage.marbles,2)
                 
                 if (image.marbles(marble).ID == prevImage.marbles(prevMarble).ID)
+                    
+                    if isempty(prevImage.marbles(prevMarble).colour)
+                        %Assign marble a coloured track
+                        image.marbles(marble).colour = colours(current_colour);
+                        %Increment next colour. Start again at zero if we run
+                        %out of colours in the array
+                        current_colour = mod(current_colour, 1) + 1;
+                    end
+
                     track_image = drawLine(track_image, image.marbles(marble).com, ...
-                        prevImage.marbles(prevMarble).com, 'r', 1000);
+                        prevImage.marbles(prevMarble).com, ...
+                        colours(current_colour), 1000);
                 end
             end
         end
@@ -147,8 +161,4 @@ if (task == 2)
         prevImage = image;
     end
     imshow(track_image);
-end
-    
-%----------------------------Task 3----------------------------------------
-if (task == 3)
 end

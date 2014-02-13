@@ -245,14 +245,20 @@ classdef myImage
                         
                         if (abs(obj.marbles(marble).sumRB - ...
                                 prevImage.marbles(prevMarble).sumRB) ...
-                                    < maxDifference) && (distance < 65)
+                                    < maxDifference) && (distance < 35)
                                 
                                 %Assign this marble the ID of its
                                 %correspondence in the previous image
                                 obj.marbles(marble).ID = ...
                                     prevImage.marbles(prevMarble).ID;
                                 
-                                %Calculate Speed of this marble
+                                %Copy colour used to track previous marble 
+                                %to this marble
+%                                 obj.marbles(marble).colour = ...
+%                                     prevImage.marbles(prevMarble).colour;
+                                
+                                %Find speed of this marble
+                                obj.marbles(marble).speed = distance; 
                         end
                         
                     end
@@ -261,14 +267,6 @@ classdef myImage
                 
             
         end
-        function obj = calculateMarbleSpeeds(obj, prevImage)
-        %Given the current image and a previous image object, calculate the
-        %speed of all the marbles visible in this image.
-        
-        %Loop through each marble in the
-        
-        end
-
     end  
 end
 

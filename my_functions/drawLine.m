@@ -17,11 +17,30 @@ function image = drawLine(image, point1, point2, color, npoints)
     xLin(xLin <= 0) = 1;
     yLin= round(yLin);
     yLin(yLin <= 0) = 1;
-    
+
     %Colour specifier
     colourSpec = zeros(1,3);
     if (color == 'r')
         colourSpec(1,1) = 255;
+    elseif (color == 'g')
+        colourSpec(1,2) = 255;
+    elseif (color == 'b')
+        colourSpec(1,3) = 255;
+    elseif (color == 'w')
+        colourSpec(1,1) = 255;
+        colourSpec(1,2) = 255;
+        colourSpec(1,3) = 255;
+    elseif (color == 'y')
+        colourSpec(1,1) = 255;
+        colourSpec(1,2) = 255;
+    elseif (color == 'p')
+        colourSpec(1,1) = 127;
+        colourSpec(1,3) = 127;
+    elseif (color == 't')
+        colourSpec(1,1) = 64;
+        colourSpec(1,2) = 224;
+        colourSpec(1,3) = 208;
+    elseif (color == 'k')
     end
     
     %Go through computed XY coordinates, changing them to the specified colour.

@@ -15,7 +15,11 @@ classdef myMarble
         %Sum of red and blue values in this marble's center
         sumRB;
         
-        %Speed at which marble is travelling
+        %Colour used to track marble
+        colour;
+        
+        %Speed at which marble is travelling. This is basically the
+        %distance travelled per frame
         speed;
 
     end
@@ -47,14 +51,6 @@ classdef myMarble
             marbleY = round(obj.com(2));
             obj.sumRB = double(image(marbleY, marbleX, 1)) + ...
                             double(image(marbleY, marbleX, 3));
-        end
-            
-        
-        function obj = generateHistogram(obj, image)
-        %Given an RGB image and this marble with an assigned center of
-        %mass, generate a histogram that identifies this marble.
-        
-            
         end
     end
     
