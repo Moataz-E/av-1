@@ -26,6 +26,9 @@ task = 1;
 %DIFFERENCE THRESHOLD
 diffThreshold = 40;
 
+%MAX MARBLE CORRESPONDENCE
+maxDifference =  25;
+
 %BACKGROUND IMAGE
 backgroundImage = myImage();
 backgroundImage.dataset = dataset;
@@ -36,6 +39,7 @@ backgroundImage = backgroundImage.readImage();
 %----------------------------Task 1----------------------------------------
 if (task == 1)
     for imageNum = 1 : num_images
+        
         %Initialize target image
         image = myImage();
         image.dataset = dataset;
@@ -45,9 +49,23 @@ if (task == 1)
 
         %Perform background subtraction on image
         image = image.removeBackground(backgroundImage.data, diffThreshold);
-
+        
+        %If this is the first image, use it as the previous image in
+        %marble tracking
+        if (imageNum == 1)
+            prevImage = myImage();
+            prevImage.dataset = dataset;
+            prevImage.number = imageNum;
+            prevImage = prevImage.generatePath();
+            prevImage = prevImage.readImage();
+            prevImage = prevImage.removeBackground(backgroundImage.data, ...
+                diffThreshold);
+            prevImage = prevImage.identifyMarbles();
+        end 
+        
         %Identify location of marbles in image
         image = image.identifyMarbles();
+        image = image.locateClosestMarble(prevImage, maxDifference);
         
         %Initialize target image
         image2 = myImage();
@@ -80,13 +98,21 @@ if (task == 1)
                 radius,'r',1000);
         end
 
+        for marble = 1 : size(image.marbles,2)
+           display(image.marbles(marble).ID);
+        end
+        display('New Frame');
         %Plot results
-        subplot(2,2,1), imshow(image.data);
-        subplot(2,2,2), imshow(image.preprocessed);
+%         subplot(2,2,1), imshow(image.data);
+%         subplot(2,2,2), imshow(image.preprocessed);
 %         subplot(2,2,3), imshow(image2.preprocessed);
-        subplot(2,2,3), imshow(finalImage);
+        figure, imshow(finalImage);
+        pause(5);
+        
 %         subplot(2,3,6), imshow(finalImage2);
         pause(1);
+        
+        prevImage = image;
     end
     
 end

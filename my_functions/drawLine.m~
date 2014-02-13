@@ -1,0 +1,9 @@
+function [ output_args ] = drawLine((image, center1, center2, color, npoints)
+%Function that takes in an RGB image, two 2x1 array representing centers
+%that need to be connecteda colour and a specified number of points, it 
+%will produce animage with the specified circle superimposed.
+%Suggested value for npoints is 100-2000, the more the better!
+
+
+end
+

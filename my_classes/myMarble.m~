@@ -45,8 +45,8 @@ classdef myMarble
         
             marbleX = round(obj.com(1));
             marbleY = round(obj.com(2));
-            obj.sumRB = double(image(marbleY, marbleX, 1)) + ...
-                            double(image(marbleY, marbleX, 3));
+            obj.sumRB = image(marbleY, marbleX, 1) + ...
+                            image(marbleX, marbleY, 3);
         end
             
         
