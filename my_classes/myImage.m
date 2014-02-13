@@ -117,7 +117,7 @@ classdef myImage
 %                                     obj.rProps(cc).MinorAxisLength;
 %                     if axisRatio > 1.35
 %                         
-%                        Do histogram.
+%                        %Do histogram.
 %                        pixel_list = obj.rProps(cc).PixelList;
 %                        [a,~] = size(pixel_list);
 %                        bw_img = zeros(obj.height, obj.width);
@@ -135,11 +135,11 @@ classdef myImage
 %                        filter = filter/sum(filter);
 %                        smooth_hist = conv(filter,first_hist);
 %                        
-%                        Find the valley between the two highest peaks.
+%                        %Find the valley between the two highest peaks.
 %                        inv_hist = 1.01*max(smooth_hist) - smooth_hist;
 %                        [~, locsmin] = findpeaks(inv_hist);
 %                        
-%                        Distribute points between the peaks.
+%                        %Distribute points between the peaks.
 %                        if (length(locsmin) == 1)
 %                            tresh = locsmin;
 %                            bin1x = 0;

@@ -38,6 +38,9 @@ backgroundImage = backgroundImage.readImage();
 
 %----------------------------Task 1----------------------------------------
 if (task == 1)
+    
+    track_image = backgroundImage.data;
+    
     for imageNum = 1 : num_images
         
         %Initialize target image
@@ -92,28 +95,35 @@ if (task == 1)
         for marble = 1 : size(image.marbles,2)
             finalImage = drawCircle(finalImage,image.marbles(marble).com, ...
                 radius,'r',1000);
+            
+            for prevMarble = 1 : size(prevImage.marbles,2)
+                
+                if (image.marbles(marble).ID == prevImage.marbles(prevMarble).ID)
+                    track_image = drawLine(track_image, image.marbles(marble).com, ...
+                        prevImage.marbles(prevMarble).com, 'r', 1000);
+                end
+            end
         end
         for marble = 1 : size(image2.marbles,2)
             finalImage2 = drawCircle(finalImage2,image2.marbles(marble).com, ...
                 radius,'r',1000);
         end
 
-        for marble = 1 : size(image.marbles,2)
-           display(image.marbles(marble).ID);
-        end
-        display('New Frame');
+%         for marble = 1 : size(image.marbles,2)
+%            display(image.marbles(marble).ID);
+%         end
         %Plot results
 %         subplot(2,2,1), imshow(image.data);
 %         subplot(2,2,2), imshow(image.preprocessed);
 %         subplot(2,2,3), imshow(image2.preprocessed);
-        imshow(finalImage);
-        pause(5);
+%         imshow(finalImage);
+%         pause(1);
         
 %         subplot(2,3,6), imshow(finalImage2);
-        pause(1);
         
         prevImage = image;
     end
+    imshow(track_image);
     
 end
     

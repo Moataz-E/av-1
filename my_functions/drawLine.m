@@ -5,10 +5,10 @@ function image = drawLine(image, point1, point2, color, npoints)
 %Suggested value for npoints is 100-2000, the more the better!
 
     %Find linear space for x coordinates of the two points
-    xLin = linspace(point1(2), point2(2), npoints);
+    yLin = linspace(point1(2), point2(2), npoints);
     
     %Find linear space for y coordinate of the two points
-    yLin = linspace(point1(1), point2(1), npoints);
+    xLin = linspace(point1(1), point2(1), npoints);
     
     %Adjust all coordinates so that they are consistent with the specified
     %center and round them. Furthermore, change any value that is 0 to 1 to
