@@ -152,15 +152,20 @@ classdef myImage
                                    bin2y = bin2y  +pixel_list(iter, 1);
                                end 
                            end
-                           bin1x = bin1x / sum1num;
-                           bin1y = bin1y / sum1num;
                            
-                           bin2x = bin2x / sum2num;
-                           bin2y = bin2y / sum2num;
+                           if (sum1num > 0)
+                                bin1x = bin1x / sum1num
+                                bin1y = bin1y / sum1num
+                           end
                            
+                           if (sum2num > 0)
+                                bin2x = bin2x / sum2num
+                                bin2y = bin2y / sum2num
+                           end
+                          
                            dist = ((bin2x - bin1x)^2 + (bin2y - bin1y)^2)^0.5;
                            
-                           if (dist > 8)
+                           if (dist > 8 && sum2num > 0 && sum1num)
                                marble = myMarble();
                                marble = marble.assignID((obj.number*100) + id);
                                marble = marble.assignCOM([bin1y, bin1x]);
