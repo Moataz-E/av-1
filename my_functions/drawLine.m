@@ -1,8 +1,10 @@
 function image = drawLine(image, point1, point2, color, npoints)
-%Function that takes in an RGB image, two 2x1 array representing points
-%that need to be connected, a colour and a specified number of points. It 
-%will produce an image with the specified circle superimposed.
+%DRAWLINE Function that takes in an RGB image, two 2x1 array representing 
+%points that need to be connected, a colour and a specified number of 
+%points. It will produce an image with the specified circle superimposed.
+%
 %Suggested value for npoints is 100-2000, the more the better!
+%
 
     %Find linear space for x coordinates of the two points
     yLin = linspace(point1(2), point2(2), npoints);

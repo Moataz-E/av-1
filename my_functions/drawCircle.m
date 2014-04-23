@@ -1,8 +1,10 @@
 function image = drawCircle(image,center,r,color,npoints)
-%Function that takes in an RGB image, a 2x1 array representing a center, a
-%radius, a colour and a specified number of points, it will produce an
-%image with the specified circle superimposed.
+%DRAWCIRCLE Function that takes in an RGB image, a 2x1 array representing a
+%center, a radius, a colour and a specified number of points, it will 
+%produce an image with the specified circle superimposed.
+%
 %Suggested value for npoints is 100-2000, the more the better!
+%
 
     %theta value to find all points on the circumference of the circle
     theta=linspace(0,2*pi,npoints);

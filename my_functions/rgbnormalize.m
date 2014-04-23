@@ -1,6 +1,6 @@
 function output = rgbnormalize(image_uint)
-    %Given an image, this function returns the an rgb normalized version
-    %of the image.
+%RGBNORMALIZE Given an image, this function returns the an rgb normalized 
+%version of the image.
  
    image = double(image_uint);
    [H,W,D] = size(image);
