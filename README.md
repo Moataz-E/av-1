@@ -7,7 +7,7 @@ av-1
 
 **Programming Language:** MATLAB
 
-**Goal:** Detect and track a set of coloured marbles through a video feed. 
+**Goal:** Detect and track a set of coloured marbles throughout a video feed. 
 
 In this project, you will find the classes used to represent images and marbles,
 auxilary functions that served various purposes, along with a report detailing
