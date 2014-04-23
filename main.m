@@ -83,12 +83,6 @@ if (task == 1)
                 radius,'r',1000);
         end
 
-%         for marble = 1 : size(image.marbles,2)
-%            display(image.marbles(marble).ID);
-%         end
-%         subplot(2,2,1), imshow(image.data);
-%         subplot(2,2,2), imshow(image.preprocessed);
-%         subplot(2,2,3), imshow(image2.preprocessed);
         imshow(finalImage);
         pause(40);
         
